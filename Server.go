@@ -4,15 +4,9 @@ import (
 	"encoding/gob"
 	"log"
 	"net"
-	"sync"
 
 	a2 "github.com/Qureshi-DH/assignment02IBC"
 )
-
-var peerList map[string]net.Conn = make(map[string]net.Conn)
-var listeningAddresses []string
-var mutex sync.Mutex
-var chainHead *a2.Block
 
 func handleConnection(conn net.Conn, name string) {
 	if name == "satoshi" {
@@ -23,7 +17,13 @@ func handleConnection(conn net.Conn, name string) {
 
 		listeningAddresses = append(listeningAddresses, receivedAddress)
 		peerList[conn.RemoteAddr().String()] = conn
-		chainHead = a2.InsertBlock("", "", "Satoshi", 0, chainHead)
+
+		if chainHead == nil {
+			chainHead = a2.InsertBlock("", "", "Satoshi", 0, chainHead)
+			chainHead = a2.InsertBlock("", "", "Satoshi", 0, chainHead)
+		} else {
+			chainHead = a2.InsertBlock("", "", "Satoshi", 0, chainHead)
+		}
 
 		mutex.Unlock()
 
